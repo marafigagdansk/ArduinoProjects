@@ -1,41 +1,42 @@
 #include <SPI.h>
 #include <Ethernet.h>
-
 #include <PubSubClient.h>
 
-byte mac[]    = { 0xDE, 0xED, 0xFD, 0xFE, 0xFE, 0xED };  
-IPAddress server(52,13,116,147); 
-int ID_RANDOM = random(0,9999);
+byte mac[] = { 0xDE, 0xDF, 0xBE, 0xEF, 0xFE, 0xED };
+IPAddress server(52, 13, 116, 147);
+int ID_RANDOM = random(0, 9999);
 EthernetClient ethClient;
 PubSubClient client(ethClient);
 
+bool isFrenteRunning = false;
+bool isTrasRunning = false;
+
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
 
-  for (int i=0;i<length;i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
- 
   if ((char)payload[0] == '1') {
-
+    isFrenteRunning = true;
+    isTrasRunning = false;
     frente();
     delay(1000);
     parar();
-    
-  
-    
-  } else if  ((char)payload[0] == '0') {
+    isFrenteRunning = false;
 
+  } else if ((char)payload[0] == '0') {
+    isFrenteRunning = false;
+    isTrasRunning = true;
     tras();
-    delay(1000);
+    delay(1000); 
     parar();
+    isTrasRunning = false;
 
-  } 
+  }
 }
 
+void sensor(){
+  if ((OUTPUT, 9) == HIGH){
+     Serial.print("SUA MAE E MINHA");
+  }
+}
 
 
 void tras(){
@@ -81,13 +82,13 @@ void setup()
 
   Ethernet.begin(mac);
   delay(5000); 
-
+  Serial.println(Ethernet.localIP());
+  Serial.println();
 }
 
 void loop(){
   
   while (!client.connected()) {
-
     Serial.print("Attempting MQTT connection...");
 
     byte willQoS = 0;
@@ -102,16 +103,17 @@ void loop(){
       boolean retained = true; 
       client.publish("catequese/status", (byte*)message, length, retained);
       client.subscribe("catequese/funcionamento");
+
     } else {
-      Serial.print("failed, rc=");
+      Serial.print("falha, rc= ");
       Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
+      Serial.println(" tentando novamente em 5 seg");
       delay(5000);
+
     }
 
   }
   client.loop();
-    digitalWrite(9, LOW);
-    digitalWrite(10, LOW);
-    digitalWrite(11, LOW);
+    digitalWrite(4,HIGH);
+    sensor();
 }
