@@ -106,7 +106,7 @@ void loop(){
     if (client.connect(ID_RANDOM, willTopic, willQoS, willRetain, willMessage)) {
       Serial.println("connected");
       char* message = "ON_LINE";
-      int length = strlen(message);
+      int length = strlen(message); //duvida
       boolean retained = true; 
       client.publish("catequese/status", (byte*)message, length, retained);
       client.subscribe("catequese/funcionamento");
