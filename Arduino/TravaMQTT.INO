@@ -14,6 +14,7 @@ bool isTrasRunning = false;
 void callback(char* topic, byte* payload, unsigned int length) {
 
   if ((char)payload[0] == '1') {
+
     isFrenteRunning = true;
     isTrasRunning = false;
     frente();
@@ -22,6 +23,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     isFrenteRunning = false;
 
   } else if ((char)payload[0] == '0') {
+
     isFrenteRunning = false;
     isTrasRunning = true;
     tras();
@@ -32,65 +34,54 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
-void sensor(){
-  if ((OUTPUT, 9) == HIGH){
-     Serial.print("SUA MAE E MINHA");
+void sensor() {
+  int pinoSensor = 9;
+  int valorSensor = digitalRead(pinoSensor);
+
+  if (valorSensor == HIGH) {
+    Serial.println("Trava aberta");
+  } else {
+    Serial.println("Trava fechada");
+
   }
 }
 
 
 void tras(){
+
   digitalWrite(2,LOW);
   digitalWrite(3,HIGH);
-
-  digitalWrite(9, LOW);
-  digitalWrite(10, HIGH);
-  digitalWrite(11, LOW);
 
 }
 
 void frente(){
+
   digitalWrite(2,HIGH);
   digitalWrite(3,LOW);
 
-  digitalWrite(9, LOW);
-  digitalWrite(10, LOW);
-  digitalWrite(11, HIGH);
-
-}
-
-void parar(){
-  digitalWrite(2,LOW);
-  digitalWrite(3,LOW);
 }
 
 void setup()
 {
-  Serial.begin(57600);
 
+  Serial.begin(57600);
   pinMode(3,OUTPUT);
   pinMode(2,OUTPUT); 
 
-  pinMode(8, OUTPUT);
-
   pinMode(9,OUTPUT);
-  pinMode(10,OUTPUT);
-  pinMode(11,OUTPUT);
 
   client.setServer(server, 1883);
   client.setCallback(callback);
-
   Ethernet.begin(mac);
   delay(5000); 
   Serial.println(Ethernet.localIP());
   Serial.println();
+
 }
 
 void loop(){
-  
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
-
     byte willQoS = 0;
     const char* willTopic = "arduino/status";
     const char* willMessage = "OFF_LINE";
