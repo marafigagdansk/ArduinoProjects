@@ -98,15 +98,15 @@ void loop(){
 
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
-    byte willQoS = 0;
-    const char* willTopic = "arduino/status";
-    const char* willMessage = "OFF_LINE";
-    boolean willRetain = true; //duvida
+    byte willQoS = 0; //Nivel de qualidade de serviço (QoS)
+    const char* willTopic = "arduino/status"; //Tópico aonde a msg vai ser mandada
+    const char* willMessage = "OFF_LINE";//Mensagem que vai ser mandada
+    boolean willRetain = true; //Determina se a msg vai ser detida no server
 
     if (client.connect(ID_RANDOM, willTopic, willQoS, willRetain, willMessage)) {
       Serial.println("connected");
       char* message = "ON_LINE";
-      int length = strlen(message); //duvida
+      int lenmsg = strlen(message); //"strlen" calcula o comprimento da string
       boolean retained = true; 
       client.publish("catequese/status", (byte*)message, length, retained);
       client.subscribe("catequese/funcionamento");
