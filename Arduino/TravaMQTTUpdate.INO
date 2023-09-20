@@ -101,7 +101,7 @@ void loop(){
     byte willQoS = 0;
     const char* willTopic = "arduino/status";
     const char* willMessage = "OFF_LINE";
-    boolean willRetain = true;
+    boolean willRetain = true; //duvida
 
     if (client.connect(ID_RANDOM, willTopic, willQoS, willRetain, willMessage)) {
       Serial.println("connected");
