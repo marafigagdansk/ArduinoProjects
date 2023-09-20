@@ -11,6 +11,7 @@ PubSubClient client(ethClient);
 bool isFrenteRunning = false;
 bool isTrasRunning = false;
 
+
 void callback(char* topic, byte* payload, unsigned int length) {
 
   if ((char)payload[0] == '1') {
@@ -34,6 +35,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
+
 void sensor() {
   int sensorPin = 9;
   int sensorValue = digitalRead(sensorPin);
@@ -50,11 +52,11 @@ void sensor() {
     } else {
       Serial.println("Erro: Not conected");
     }
+
   } else {
     Serial.println("Trava fechada");
   }
 }
-
 
 
 void tras(){
@@ -64,12 +66,14 @@ void tras(){
 
 }
 
+
 void frente(){
 
   digitalWrite(2,HIGH);
   digitalWrite(3,LOW);
 
 }
+
 
 void setup()
 {
@@ -89,7 +93,9 @@ void setup()
 
 }
 
+
 void loop(){
+
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     byte willQoS = 0;
@@ -114,7 +120,9 @@ void loop(){
     }
 
   }
+
   client.loop();
     digitalWrite(4,HIGH);
     sensor();
+
 }
